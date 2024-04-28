@@ -10,7 +10,7 @@ namespace BovineLabs.Core.Extensions
     /// <summary> Extensions for the mathematics package. </summary>
     public static class MathematicsExtensions
     {
-        /// <summary> Encapsulates two AABBs. </summary>
+        /*/// <summary> Encapsulates two AABBs. </summary>
         /// <param name="aabb"> The base AABB. </param>
         /// <param name="bounds"> The second AABB. </param>
         /// <returns> The new AABB that encapsulates both AABBs. </returns>
@@ -22,9 +22,9 @@ namespace BovineLabs.Core.Extensions
             aabb = new MinMaxAABB { Min = math.min(aabb.Min, min), Max = math.max(aabb.Max, min) };
             aabb = new MinMaxAABB { Min = math.min(aabb.Min, max), Max = math.max(aabb.Max, max) };
             return aabb;
-        }
+        }*/
 
-        /// <summary> Expands the size of an AABB. </summary>
+        /*/// <summary> Expands the size of an AABB. </summary>
         /// <param name="aabb"> The AABB. </param>
         /// <param name="expand"> The expansion amount. </param>
         /// <returns> The new AABB. </returns>
@@ -32,16 +32,16 @@ namespace BovineLabs.Core.Extensions
         {
             aabb.Extents += expand * 0.5f;
             return aabb;
-        }
+        }*/
 
-        /// <summary> Returns if a AABB is default. </summary>
+        /*/// <summary> Returns if a AABB is default. </summary>
         /// <param name="aabb"> The aabb. </param>
         /// <returns> True if default. </returns>
         public static bool IsDefault(this AABB aabb)
         {
             return aabb.Center.Equals(float3.zero) &&
                    aabb.Extents.Equals(float3.zero);
-        }
+        }*/
 
         /// <summary> Get the right vector from a transformation matrix. </summary>
         /// <param name="value"> The transformation matrix. </param>

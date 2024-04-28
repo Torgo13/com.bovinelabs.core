@@ -4,17 +4,11 @@
     "references": [
         "Unity.Burst",
         "Unity.Collections",
-        "Unity.Entities",
-        "Unity.Entities.Graphics",
-        "Unity.Entities.Hybrid",
-        "Unity.Entities.Hybrid.HybridComponents",
-        "Unity.Logging",
         "Unity.Mathematics",
         "Unity.Mathematics.Extensions",
         "Unity.NetCode",
         "Unity.Physics",
-        "Unity.Scenes",
-        "Unity.Transforms"
+        "Unity.Scenes"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -38,11 +32,6 @@
             "name": "com.unity.physics",
             "expression": "0",
             "define": "UNITY_PHYSICS"
-        },
-        {
-            "name": "com.unity.entities.graphics",
-            "expression": "0",
-            "define": "UNITY_GRAPHICS"
         }
     ],
     "noEngineReferences": false

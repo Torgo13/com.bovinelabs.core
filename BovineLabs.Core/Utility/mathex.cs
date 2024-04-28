@@ -213,7 +213,7 @@ namespace BovineLabs.Core.Utility
             minMax = Rect.MinMaxRect(minValue.x, minValue.y, maxValue.x, maxValue.y);
         }
 
-        /// <summary> Calculates the maximum value. </summary>
+        /*/// <summary> Calculates the maximum value. </summary>
         /// <param name="values"> The data. </param>
         /// <param name="length"> The length of the data. </param>
         /// <param name="minMax"> The maximum value. int.MinValue if length 0 is passed. </param>
@@ -232,7 +232,7 @@ namespace BovineLabs.Core.Utility
             }
 
             minMax = new MinMaxAABB { Min = minValue, Max = maxValue };
-        }
+        }*/
 
         /// <summary> Calculates the sum of values. </summary>
         /// <param name="values"> The data. </param>
@@ -700,7 +700,8 @@ namespace BovineLabs.Core.Utility
             var u2 = random.NextFloat();
 
             var R = sigma * math.sqrt(-2 * math.log(u1));
-            var theta = math.PI2 * u2;
+            //var theta = math.PI2 * u2;
+            var theta = math.PI * 2 * u2;
 
             var z0 = R * math.cos(theta) + mu;
             var z1 = R * math.sin(theta) + mu;

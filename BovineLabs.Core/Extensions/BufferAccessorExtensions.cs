@@ -8,11 +8,11 @@ namespace BovineLabs.Core.Extensions
     using System.Diagnostics;
     using Unity.Burst.CompilerServices;
     using Unity.Collections.LowLevel.Unsafe;
-    using Unity.Entities;
+    //using Unity.Entities;
 
     public static unsafe class BufferAccessorExtensions
     {
-        public static DynamicBuffer<T> GetUnsafe<T>(this BufferAccessor<T> bufferAccessor, int index)
+        /*public static DynamicBuffer<T> GetUnsafe<T>(this BufferAccessor<T> bufferAccessor, int index)
             where T : unmanaged, IBufferElementData
         {
             var accessor = UnsafeUtility.As<BufferAccessor<T>, InternalBufferAccessor>(ref bufferAccessor);
@@ -25,9 +25,9 @@ namespace BovineLabs.Core.Extensions
 #else
             return new DynamicBuffer<T>(hdr, accessor.InternalCapacity);
 #endif
-        }
+        }*/
 
-        public static DynamicBuffer<T> GetUnsafeRW<T>(this BufferAccessor<T> bufferAccessor, int index)
+        /*public static DynamicBuffer<T> GetUnsafeRW<T>(this BufferAccessor<T> bufferAccessor, int index)
             where T : unmanaged, IBufferElementData
         {
             var accessor = UnsafeUtility.As<BufferAccessor<T>, InternalBufferAccessor>(ref bufferAccessor);
@@ -40,7 +40,7 @@ namespace BovineLabs.Core.Extensions
 #else
             return new DynamicBuffer<T>(hdr, accessor.InternalCapacity);
 #endif
-        }
+        }*/
 
 
         [NativeContainer]
