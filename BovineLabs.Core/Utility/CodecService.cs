@@ -10,7 +10,7 @@ namespace BovineLabs.Core.Utility
     /// <remarks> Based off com.unity.entities@0.50.0-preview.24\Unity.Core\Compression\Codec.cs . </remarks>
     public static unsafe class CodecService
     {
-        private const string DllName = "liblz4";
+        private const string DllName = "lz4.nativebinaries";
 
         public static int GetBoundedSize(int srcSize)
         {
