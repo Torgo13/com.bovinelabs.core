@@ -19,13 +19,15 @@ namespace BovineLabs.Core.ConfigVars
 #endif
 
     /// <summary> The manager for the config vars. Is pretty automated. </summary>
-    internal static class ConfigVarManager
+    public static class ConfigVarManager
     {
         private static readonly Regex ValidateNameRegex = new(@"^[a-z_+-][a-z0-9_+.-]*$");
-        private static readonly Dictionary<ConfigVarAttribute, IConfigVarContainer> All = new();
+        private static readonly Dictionary<ConfigVarAttribute, IConfigVarContainer> AllInternal = new();
         private static bool isInitialized;
 
-        internal static IEnumerable<(ConfigVarAttribute ConfigVar, FieldInfo Field)> FindAllConfigVars()
+        public static IReadOnlyDictionary<ConfigVarAttribute, IConfigVarContainer> All => AllInternal;
+
+        public static IEnumerable<(ConfigVarAttribute ConfigVar, FieldInfo Field)> FindAllConfigVars()
         {
             var coreAssembly = typeof(ConfigVarManager).Assembly;
 
@@ -135,19 +137,19 @@ namespace BovineLabs.Core.ConfigVars
             }
 
 #if UNITY_EDITOR
-            foreach (var (configVar, container) in All)
+            foreach (var (configVar, container) in AllInternal)
             {
                 EditorPrefs.SetString(configVar.Name, container.StringValue);
             }
 #endif
 
-            All.Clear();
+            AllInternal.Clear();
             isInitialized = false;
         }
 
         private static void RegisterConfigVar(ConfigVarAttribute configVar, IConfigVarContainer container)
         {
-            if (All.ContainsKey(configVar))
+            if (AllInternal.ContainsKey(configVar))
             {
                 Debug.LogError($"Trying to register ConfigVar {configVar.Name} twice");
                 return;
@@ -159,7 +161,7 @@ namespace BovineLabs.Core.ConfigVars
                 return;
             }
 
-            All.Add(configVar, container);
+            AllInternal.Add(configVar, container);
         }
 
         private static IConfigVarContainer GetContainer(object obj)
