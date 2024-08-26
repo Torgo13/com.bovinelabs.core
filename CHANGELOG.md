@@ -1,4 +1,60 @@
 # Changelog
+## [1.3.0] - 2024-06-26
+### Added
+* IJobChunkWorkerBeginEnd
+* ContainsKey to DynamicPerfectHashMap
+* Added OnWorkerBegin, OnWorkerEnd, OnBucketEnd to IJobParallelHashMapDefer
+* NativeParallelMultiHashMapFallback now supports hash overrides
+* An error message if you try to use SystemAPI.Register multiple times on same system
+* GetAllDependencies to ObjectGroup
+
+### Changed
+* Updated to 1.3.0-exp.1
+
+### Fixed
+* A safety check in Timers
+* Settings that are deleted should regenerate without a domain reload.
+* IUID issues with duplication
+
+### Changed
+### Fixed
+
+## [1.2.15] - 2024-06-08
+### Added
+* CacheImpl which adds an easy way to add a cache to a meta entity
+* WriteGroupMatcher which matches existence of any component from a write group including enable state
+* IJobParallelHashMapDefer now supports ReadOnly variants
+* Added GetRef to DynamicHashMap
+* Find Authoring Problems to Assembly Graph
+* TestLeakDetectionAttribute from Ribitta
+* OnlySize option to StableTypeHashAttribute
+* IndexOf and TryGetValue predicate extensions to UnsafeList
+* NativeHashMapFactory and NativeHashSetFactory to control min growth
+* Ref check safety into DynamicHashMaps - they should be passed by ref if you are adding
+* ConfigVars for setting FixedUpdateTick and TargetFrameRates
+* VFXGraphTemplateWindow
+* Added an Enumerator for Blob[Multi]HashMap
+* NativeParallelMultiHashMapFallback that falls back to a NativeQueue if the capacity is exceeded instead of crashing
+* Ability to HotKey DataModes on Inspector and Entities Hierarchy
+
+### Changed
+* UIDManagerAttribute renamed to AutoRefAttribute
+* AutoRefAttribute and IUID have been moved to Core from ObjectManagement Extension
+* IUID now starts at 1 so 0 can be used as a null or default check
+* Renamed UnsafeComponentTypeHandle to UnsafeEntityDataAccess
+* Serializer now uses UnsafeList<T>* instead of NativeList<T>
+* Assembly Builder now adds Authoring reference to Editor assembly
+* ElementProperty and ElementEditor now have some shared logic in ElementUtility
+* Blob[Multi]HashMap now always returns values by ref or Ptr<T>
+
+### Fixed
+* SubScene unloading was no longer triggering Destroy
+* Auto IDs were broken by a recent Unity patch
+* Warnings due to nullable context and UI
+* Wrapped TerrainToMesh to require the module
+* AlwaysUpdatePhysicsWorld should work without my fork
+* ObjectDefinition create authoring couldn't handle null definition fields
+ 
 ## [1.2.14] - 2024-05-13
 ### Added
 * AddDependency<T> extension for SystemState

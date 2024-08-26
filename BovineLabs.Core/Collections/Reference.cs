@@ -12,8 +12,10 @@ namespace BovineLabs.Core.Collections
     using Unity.Burst;
     using Unity.Collections;
     using Unity.Collections.LowLevel.Unsafe;
-    //using Unity.Entities;
-    //using Unity.Entities.Serialization;
+#if UNITY_ENTITES
+    using Unity.Entities;
+    using Unity.Entities.Serialization;
+#endif // UNITY_ENTITES
     using Unity.Mathematics;
 
     /// <summary> Implements a reference type, based off <see cref="BlobAssetReference{T}"/>. </summary>

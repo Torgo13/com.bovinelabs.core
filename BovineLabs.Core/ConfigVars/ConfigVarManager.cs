@@ -11,7 +11,6 @@ namespace BovineLabs.Core.ConfigVars
     using BovineLabs.Core.Utility;
     using Unity.Burst;
     using Unity.Collections;
-    //using Unity.Entities;
     using UnityEngine;
     using Debug = UnityEngine.Debug;
 #if UNITY_EDITOR
