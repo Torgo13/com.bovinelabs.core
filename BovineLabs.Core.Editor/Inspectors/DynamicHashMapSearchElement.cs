@@ -132,6 +132,5 @@ namespace BovineLabs.Core.Editor.Inspectors
         }
     }
 }
-#endif
 
 #endif // UNITY_ENTITES
