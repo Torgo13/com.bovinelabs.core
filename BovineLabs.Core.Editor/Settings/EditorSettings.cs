@@ -6,7 +6,9 @@ namespace BovineLabs.Core.Editor.Settings
 {
     using System;
     using System.Linq;
+#if UNITY_ENTITES
     using BovineLabs.Core.Authoring.Settings;
+#endif // UNITY_ENTITES
     using BovineLabs.Core.PropertyDrawers;
     using BovineLabs.Core.Settings;
     using UnityEditor;

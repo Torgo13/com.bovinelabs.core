@@ -9,7 +9,9 @@ namespace BovineLabs.Core.Editor.Settings
     using System.IO;
     using System.Linq;
     using System.Reflection;
+#if UNITY_ENTITES
     using BovineLabs.Core.Authoring.Settings;
+#endif // UNITY_ENTITES
     using BovineLabs.Core.Editor.Helpers;
     using BovineLabs.Core.Settings;
     using UnityEditor;

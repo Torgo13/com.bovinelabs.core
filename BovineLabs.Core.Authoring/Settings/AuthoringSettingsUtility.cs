@@ -2,6 +2,8 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
+#if UNITY_ENTITES
+
 namespace BovineLabs.Core.Authoring.Settings
 {
     using System;
@@ -44,3 +46,6 @@ namespace BovineLabs.Core.Authoring.Settings
         }
     }
 }
+
+#endif // UNITY_ENTITES
+
