@@ -2,6 +2,8 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
+#undef UNITY_ASSERTIONS
+
 namespace BovineLabs.Core.Editor.Settings
 {
     using System;
@@ -14,6 +16,9 @@ namespace BovineLabs.Core.Editor.Settings
 #endif // UNITY_ENTITES
     using BovineLabs.Core.Editor.Helpers;
     using BovineLabs.Core.Settings;
+#if UNITY_ASSERTIONS
+    using Unity.Assertions;
+#endif // UNITY_ASSERTIONS
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;
@@ -137,6 +142,12 @@ namespace BovineLabs.Core.Editor.Settings
                 }
             }
 
+#if UNITY_ASSERTIONS
+
+            Assert.IsNotNull(instance, $"{type.Name} returned null from asset database. Might need to reimport something.");
+
+#endif // UNITY_ASSERTIONS
+            
 #if UNITY_ENTITES
 
             TryAddToSettingsAuthoring(instance);
@@ -185,18 +196,23 @@ namespace BovineLabs.Core.Editor.Settings
             var so = new SerializedObject(authoring);
             var settingsProperty = so.FindProperty("settings");
 
-            for (var index = 0; index < settingsProperty.arraySize; index++)
+            // Clear up null references
+            for (var index = settingsProperty.arraySize - 1; index >= 0; index--)
             {
                 var element = settingsProperty.GetArrayElementAtIndex(index);
-
-                var obj = element.objectReferenceValue;
-
-                if (obj == null)
+                if (element.objectReferenceValue != null)
                 {
                     continue;
                 }
 
-                if (obj == settingsBase)
+                settingsProperty.DeleteArrayElementAtIndex(index);
+            }
+
+            // Early out if it already exists
+            for (var index = 0; index < settingsProperty.arraySize; index++)
+            {
+                var element = settingsProperty.GetArrayElementAtIndex(index);
+                if (element.objectReferenceValue == settingsBase)
                 {
                     return;
                 }

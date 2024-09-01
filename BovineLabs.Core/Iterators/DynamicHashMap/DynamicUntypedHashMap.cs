@@ -108,7 +108,7 @@ namespace BovineLabs.Core.Iterators
                 DynamicUntypedHashMapHelper<TKey>.AddUnique(this.buffer, ref this.helper, key, defaultValue);
             }
 
-            return ref UnsafeUtility.ArrayElementAsRef<TValue>(this.helper->Values, idx);
+            return ref DynamicUntypedHashMapHelper<TKey>.GetValue<TValue>(this.helper, idx);
         }
 
         /// <summary>
