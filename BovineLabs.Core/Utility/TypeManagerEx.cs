@@ -2,6 +2,8 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
+#if UNITY_ENTITES
+
 namespace BovineLabs.Core.Utility
 {
     using System;
@@ -159,3 +161,5 @@ namespace BovineLabs.Core.Utility
 #endif
     }
 }
+
+#endif // UNITY_ENTITES
