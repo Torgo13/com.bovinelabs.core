@@ -21,6 +21,8 @@ namespace BovineLabs.Core.States
 
         public NativeParallelHashMap<byte, ComponentType> RegisteredStatesMap;
 
+        public BLDebug Debug;
+
         public StateImpl(ref SystemState state, ComponentType stateComponent, ComponentType previousStateComponent)
         {
             this.Query = new EntityQueryBuilder(Allocator.Temp).WithAll(stateComponent).WithAllRW(previousStateComponent).Build(ref state);
@@ -29,6 +31,7 @@ namespace BovineLabs.Core.States
             this.EntityType = state.GetEntityTypeHandle();
             this.StateType = state.GetDynamicComponentTypeHandle(stateComponent);
             this.PreviousStateType = state.GetDynamicComponentTypeHandle(previousStateComponent);
+            this.Debug = state.EntityManager.GetSingleton<BLDebug>();
 
             this.RegisteredStatesMap = new NativeParallelHashMap<byte, ComponentType>(256, Allocator.Persistent);
 
@@ -45,7 +48,7 @@ namespace BovineLabs.Core.States
 
                 if (!this.RegisteredStatesMap.TryAdd(component.StateKey, stateInstanceComponent))
                 {
-                    state.EntityManager.GetSingleton<BLDebug>().Error($"Key {component.StateKey} has already been registered");
+                    this.Debug.Error($"Key {component.StateKey} has already been registered");
                 }
             }
         }

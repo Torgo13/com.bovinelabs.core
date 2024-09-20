@@ -7,13 +7,13 @@
 namespace BovineLabs.Core.States
 {
     using BovineLabs.Core.Extensions;
+    using BovineLabs.Core.Utility;
     using Unity.Assertions;
     using Unity.Burst;
     using Unity.Burst.Intrinsics;
     using Unity.Collections;
     using Unity.Collections.LowLevel.Unsafe;
     using Unity.Entities;
-    using UnityEngine;
 
     /// <summary> A generic general purpose state system that ensures only a single state component exists on an entity but driven from a byte field. </summary>
     public struct StateFlagModel
@@ -28,6 +28,8 @@ namespace BovineLabs.Core.States
 
             this.impl = new StateImpl(ref state, stateComponent, previousStateComponent);
         }
+
+        public NativeParallelHashMap<byte, ComponentType>.ReadOnly States => this.impl.RegisteredStatesMap.AsReadOnly();
 
         public void Dispose(ref SystemState state)
         {
@@ -65,6 +67,7 @@ namespace BovineLabs.Core.States
                 StateType = this.impl.StateType,
                 PreviousStateType = this.impl.PreviousStateType,
                 CommandBuffer = commandBuffer,
+                Debug = this.impl.Debug,
                 StateSize = this.stateSize,
             };
         }
@@ -84,6 +87,8 @@ namespace BovineLabs.Core.States
             public DynamicComponentTypeHandle PreviousStateType;
 
             public EntityCommandBuffer.ParallelWriter CommandBuffer;
+
+            public BLDebug Debug;
 
             public byte StateSize;
 
@@ -138,7 +143,7 @@ namespace BovineLabs.Core.States
                                 }
                                 else
                                 {
-                                    Debug.LogWarning($"State {bit} not setup for type index {this.StateType.m_TypeIndex.Value}");
+                                    this.Debug.Warning($"State {bit} not setup for type {TypeManagerEx.GetTypeName(this.StateType.m_TypeIndex)}");
                                 }
                             }
                         }

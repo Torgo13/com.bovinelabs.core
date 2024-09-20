@@ -135,7 +135,7 @@ namespace BovineLabs.Core.Iterators
         public bool HasComponent(Entity entity)
         {
             var ecs = this.access->EntityComponentStore;
-            return ecs->HasComponent(entity, this.typeIndex, ref this.cache);
+            return ecs->HasComponent(entity, this.typeIndex, ref this.cache, out _);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace BovineLabs.Core.Iterators
         public bool HasComponent(SystemHandle system)
         {
             var ecs = this.access->EntityComponentStore;
-            return ecs->HasComponent(system.m_Entity, this.typeIndex, ref this.cache);
+            return ecs->HasComponent(system.m_Entity, this.typeIndex, ref this.cache, out _);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace BovineLabs.Core.Iterators
             if (this.isZeroSized != 0)
             {
                 componentData = default;
-                return ecs->HasComponent(entity, this.typeIndex, ref this.cache);
+                return ecs->HasComponent(entity, this.typeIndex, ref this.cache, out _);
             }
 
             if (Hint.Unlikely(!ecs->Exists(entity)))

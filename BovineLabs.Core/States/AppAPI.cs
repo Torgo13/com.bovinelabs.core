@@ -5,7 +5,7 @@
 #if UNITY_ENTITES
 
 #if UNITY_EDITOR || BL_DEBUG
-#define LOG_DEBUG
+#define DEBUG_LOG
 #endif
 
 namespace BovineLabs.Core.States
@@ -14,6 +14,7 @@ namespace BovineLabs.Core.States
     using BovineLabs.Core.Collections;
     using BovineLabs.Core.Extensions;
     using BovineLabs.Core.Keys;
+    using BovineLabs.Core.Utility;
     using Unity.Collections;
     using Unity.Collections.LowLevel.Unsafe;
     using Unity.Entities;
@@ -63,7 +64,7 @@ namespace BovineLabs.Core.States
             where TA : unmanaged, IBitArray<TA>
             where TS : KSettings
         {
-#if LOG_DEBUG
+#if DEBUG_LOG
             systemState.EntityManager.GetSingleton<BLDebug>(false).Debug($"{GetName<T, TA>()} set to {name}");
 #endif
 
@@ -81,7 +82,7 @@ namespace BovineLabs.Core.States
             where T : unmanaged, IState<TA>
             where TA : unmanaged, IBitArray<TA>
         {
-#if LOG_DEBUG
+#if DEBUG_LOG
             systemState.EntityManager.GetSingleton<BLDebug>(false).Debug($"{GetName<T, TA>()} set to {state}");
 #endif
 
@@ -100,7 +101,7 @@ namespace BovineLabs.Core.States
             where TA : unmanaged, IBitArray<TA>
             where TS : KSettings
         {
-#if LOG_DEBUG
+#if DEBUG_LOG
             systemState.EntityManager.GetSingleton<BLDebug>(false).Debug($"{GetName<T, TA>()} enabled {name}");
 #endif
 
@@ -118,7 +119,7 @@ namespace BovineLabs.Core.States
             where T : unmanaged, IState<TA>
             where TA : unmanaged, IBitArray<TA>
         {
-#if LOG_DEBUG
+#if DEBUG_LOG
             systemState.EntityManager.GetSingleton<BLDebug>(false).Debug($"{GetName<T, TA>()} enable {state}");
 #endif
             StateEnable<T, TA>(ref systemState, state, true);
@@ -136,7 +137,7 @@ namespace BovineLabs.Core.States
             where TA : unmanaged, IBitArray<TA>
             where TS : KSettings
         {
-#if LOG_DEBUG
+#if DEBUG_LOG
             systemState.EntityManager.GetSingleton<BLDebug>(false).Debug($"{GetName<T, TA>()} disabled {name}");
 #endif
 
@@ -154,7 +155,7 @@ namespace BovineLabs.Core.States
             where T : unmanaged, IState<TA>
             where TA : unmanaged, IBitArray<TA>
         {
-#if LOG_DEBUG
+#if DEBUG_LOG
             systemState.EntityManager.GetSingleton<BLDebug>(false).Debug($"{GetName<T, TA>()} disable {state}");
 #endif
 
@@ -176,7 +177,7 @@ namespace BovineLabs.Core.States
             where T : unmanaged, IState<TA>
             where TA : unmanaged, IBitArray<TA>
         {
-            return TypeManager.GetTypeNameFixed(TypeManager.GetTypeIndex<T>());
+            return TypeManagerEx.GetTypeName(TypeManager.GetTypeIndex<T>());
         }
     }
 }

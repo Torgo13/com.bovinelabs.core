@@ -13,7 +13,6 @@ namespace BovineLabs.Core.States
     using Unity.Collections;
     using Unity.Collections.LowLevel.Unsafe;
     using Unity.Entities;
-    using UnityEngine;
 
     /// <summary> A generic general purpose state system that ensures only a single state component exists on an entity but driven from a byte field. </summary>
     public struct StateModelWithHistory
@@ -87,6 +86,7 @@ namespace BovineLabs.Core.States
                 HistoryBackType = this.historyBackType,
                 HistoryForwardType = this.historyForwardType,
                 CommandBuffer = commandBuffer,
+                Debug = this.impl.Debug,
                 MaxHistory = this.maxHistorySize,
             };
         }
@@ -110,6 +110,8 @@ namespace BovineLabs.Core.States
             public DynamicComponentTypeHandle HistoryForwardType;
 
             public EntityCommandBuffer.ParallelWriter CommandBuffer;
+
+            public BLDebug Debug;
 
             public int MaxHistory;
 
@@ -150,7 +152,7 @@ namespace BovineLabs.Core.States
                         }
                         else
                         {
-                            Debug.LogWarning($"State {state} not setup");
+                            this.Debug.Warning($"State {state} not setup");
                         }
                     }
 

@@ -8,7 +8,9 @@ namespace BovineLabs.Core.Internal
 {
     using System;
     using System.Diagnostics;
+    using BovineLabs.Core.Extensions;
     using Unity.Burst.CompilerServices;
+    using Unity.Collections.LowLevel.Unsafe;
     using Unity.Entities;
 
     public static class ArchetypeChunkInternal
@@ -31,8 +33,16 @@ namespace BovineLabs.Core.Internal
                 return;
             }
 
-            // This should (=S) be thread safe int writes are atomic in c#
             archetype->Chunks.SetChangeVersion(typeIndexInArchetype, chunk.m_Chunk.ListIndex, handle.GlobalSystemVersion);
+
+#if (UNITY_EDITOR || DEVELOPMENT_BUILD) && !DISABLE_ENTITIES_JOURNALING
+            if (Hint.Unlikely(chunk.m_EntityComponentStore->m_RecordToJournal != 0))
+            {
+                byte* ptr = ChunkDataUtility.GetComponentDataWithTypeRW(
+                    chunk.m_Chunk, archetype, 0, handle.m_TypeIndex, handle.GlobalSystemVersion, ref handle.m_LookupCache);
+                chunk.JournalAddRecordGetComponentDataRW(ref handle, ptr, handle.m_SizeInChunk * chunk.Count);
+            }
+#endif
         }
 
         public static unsafe void SetChangeFilter<T>(this ArchetypeChunk chunk, ref ComponentTypeHandle<T> handle, uint version)
@@ -53,8 +63,16 @@ namespace BovineLabs.Core.Internal
                 return;
             }
 
-            // This should (=S) be thread safe int writes are atomic in c#
             archetype->Chunks.SetChangeVersion(typeIndexInArchetype, chunk.m_Chunk.ListIndex, version);
+
+#if (UNITY_EDITOR || DEVELOPMENT_BUILD) && !DISABLE_ENTITIES_JOURNALING
+            if (Hint.Unlikely(chunk.m_EntityComponentStore->m_RecordToJournal != 0))
+            {
+                byte* ptr = ChunkDataUtility.GetComponentDataWithTypeRW(
+                    chunk.m_Chunk, archetype, 0, handle.m_TypeIndex, handle.GlobalSystemVersion, ref handle.m_LookupCache);
+                chunk.JournalAddRecordGetComponentDataRW(ref handle, ptr, handle.m_SizeInChunk * chunk.Count);
+            }
+#endif
         }
 
         public static unsafe void SetChangeFilter<T>(this ArchetypeChunk chunk, ref BufferTypeHandle<T> handle)
@@ -77,6 +95,13 @@ namespace BovineLabs.Core.Internal
 
             // This should (=S) be thread safe int writes are atomic in c#
             archetype->Chunks.SetChangeVersion(typeIndexInArchetype, chunk.m_Chunk.ListIndex, handle.GlobalSystemVersion);
+
+#if (UNITY_EDITOR || DEVELOPMENT_BUILD) && !DISABLE_ENTITIES_JOURNALING
+            if (Hint.Unlikely(chunk.m_EntityComponentStore->m_RecordToJournal != 0))
+            {
+                chunk.JournalAddRecord(EntitiesJournaling.RecordType.GetBufferRW, handle.m_TypeIndex, handle.m_GlobalSystemVersion);
+            }
+#endif
         }
 
         public static unsafe void SetChangeFilter<T>(this ArchetypeChunk chunk, ref BufferTypeHandle<T> handle, uint version)
@@ -99,6 +124,13 @@ namespace BovineLabs.Core.Internal
 
             // This should (=S) be thread safe int writes are atomic in c#
             archetype->Chunks.SetChangeVersion(typeIndexInArchetype, chunk.m_Chunk.ListIndex, version);
+
+#if (UNITY_EDITOR || DEVELOPMENT_BUILD) && !DISABLE_ENTITIES_JOURNALING
+            if (Hint.Unlikely(chunk.m_EntityComponentStore->m_RecordToJournal != 0))
+            {
+                chunk.JournalAddRecord(EntitiesJournaling.RecordType.GetBufferRW, handle.m_TypeIndex, handle.m_GlobalSystemVersion);
+            }
+#endif
         }
 
         public static unsafe void SetChangeFilter(this ArchetypeChunk chunk, ref DynamicComponentTypeHandle handle)
@@ -114,6 +146,18 @@ namespace BovineLabs.Core.Internal
             }
 
             archetype->Chunks.SetChangeVersion(typeIndexInArchetype, chunk.m_Chunk.ListIndex, handle.GlobalSystemVersion);
+
+#if (UNITY_EDITOR || DEVELOPMENT_BUILD) && !DISABLE_ENTITIES_JOURNALING
+            if (Hint.Unlikely(chunk.m_EntityComponentStore->m_RecordToJournal != 0))
+            {
+                byte* ptr = ChunkDataUtility.GetComponentDataRW(chunk.m_Chunk, archetype, 0, typeIndexInArchetype, handle.GlobalSystemVersion);
+                var typeSize = archetype->SizeOfs[typeIndexInArchetype];
+                var length = chunk.Count;
+                var byteLen = length * typeSize;
+
+                chunk.JournalAddRecord(EntitiesJournaling.RecordType.GetComponentDataRW, handle.m_TypeIndex, handle.m_GlobalSystemVersion, ptr, byteLen);
+            }
+#endif
         }
 
         [Conditional("ENABLE_UNITY_COLLECTIONS_CHECKS")]
