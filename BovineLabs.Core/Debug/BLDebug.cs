@@ -16,6 +16,7 @@ namespace BovineLabs.Core
     using Unity.Logging.Internal;
 #endif // UNITY_LOGGING
 
+    [HideInStackTrace]
     public struct BLDebug : IComponentData
     {
         public static readonly BLDebug Default = new() { LoggerHandle = LoggerManager.Logger.Handle };
@@ -32,6 +33,15 @@ namespace BovineLabs.Core
         {
             if (this.Enabled)
             {
+                CustomLog.To(this.LoggerHandle).Verbose(msg);
+            }
+        }
+
+        [Conditional("UNITY_EDITOR")]
+        public readonly void VerboseString(in string msg)
+        {
+            if (this.Enabled)
+            {
                 Log.To(this.LoggerHandle).Verbose(msg);
             }
         }
@@ -42,7 +52,7 @@ namespace BovineLabs.Core
         {
             if (this.Enabled)
             {
-                Log.To(this.LoggerHandle).Debug(msg);
+                CustomLog.To(this.LoggerHandle).Debug(msg);
             }
         }
 
@@ -52,13 +62,23 @@ namespace BovineLabs.Core
         {
             if (this.Enabled)
             {
-                Log.To(this.LoggerHandle).Debug(msg);
+                CustomLog.To(this.LoggerHandle).Debug(msg);
             }
         }
 
         [Conditional("UNITY_EDITOR")]
         [Conditional("BL_DEBUG")]
         public readonly void DebugLong4096(in FixedString4096Bytes msg)
+        {
+            if (this.Enabled)
+            {
+                CustomLog.To(this.LoggerHandle).Debug(msg);
+            }
+        }
+
+        [Conditional("UNITY_EDITOR")]
+        [Conditional("BL_DEBUG")]
+        public readonly void DebugString(in string msg)
         {
             if (this.Enabled)
             {
@@ -70,6 +90,30 @@ namespace BovineLabs.Core
         {
             if (this.Enabled)
             {
+                CustomLog.To(this.LoggerHandle).Info(msg);
+            }
+        }
+
+        public readonly void Info512(in FixedString512Bytes msg)
+        {
+            if (this.Enabled)
+            {
+                CustomLog.To(this.LoggerHandle).Info(msg);
+            }
+        }
+
+        public readonly void Info(in FixedString4096Bytes msg)
+        {
+            if (this.Enabled)
+            {
+                CustomLog.To(this.LoggerHandle).Info(msg);
+            }
+        }
+
+        public readonly void InfoString(in string msg)
+        {
+            if (this.Enabled)
+            {
                 Log.To(this.LoggerHandle).Info(msg);
             }
         }
@@ -78,7 +122,7 @@ namespace BovineLabs.Core
         {
             if (this.Enabled)
             {
-                Log.To(this.LoggerHandle).Warning(msg);
+                CustomLog.To(this.LoggerHandle).Warning(msg);
             }
         }
 
@@ -86,11 +130,19 @@ namespace BovineLabs.Core
         {
             if (this.Enabled)
             {
-                Log.To(this.LoggerHandle).Warning(msg);
+                CustomLog.To(this.LoggerHandle).Warning(msg);
             }
         }
 
         public readonly void Warning4096(in FixedString4096Bytes msg)
+        {
+            if (this.Enabled)
+            {
+                CustomLog.To(this.LoggerHandle).Warning(msg);
+            }
+        }
+
+        public readonly void WarningString(in string msg)
         {
             if (this.Enabled)
             {
@@ -102,7 +154,7 @@ namespace BovineLabs.Core
         {
             if (this.Enabled)
             {
-                Log.To(this.LoggerHandle).Error(msg);
+                CustomLog.To(this.LoggerHandle).Error(msg);
             }
         }
 
@@ -110,11 +162,19 @@ namespace BovineLabs.Core
         {
             if (this.Enabled)
             {
-                Log.To(this.LoggerHandle).Error(msg);
+                CustomLog.To(this.LoggerHandle).Error(msg);
             }
         }
 
         public readonly void Error4096(in FixedString4096Bytes msg)
+        {
+            if (this.Enabled)
+            {
+                CustomLog.To(this.LoggerHandle).Error(msg);
+            }
+        }
+
+        public readonly void ErrorString(in string msg)
         {
             if (this.Enabled)
             {

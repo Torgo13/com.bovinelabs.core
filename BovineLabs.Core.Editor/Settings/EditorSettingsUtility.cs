@@ -166,7 +166,7 @@ namespace BovineLabs.Core.Editor.Settings
                 return;
             }
 
-            var editorSettings = GetEditorSettings();
+            EditorSettings? editorSettings = GetEditorSettings();
             if (editorSettings == null || editorSettings.DefaultSettingsAuthoring == null)
             {
                 return;
@@ -182,6 +182,8 @@ namespace BovineLabs.Core.Editor.Settings
             }
             else
             {
+                bool any = false;
+
                 foreach (var world in worlds)
                 {
                     SettingsAuthoring? authoring;
@@ -200,7 +202,14 @@ namespace BovineLabs.Core.Editor.Settings
                         continue;
                     }
 
+                    any = true;
                     authorings.Add(authoring);
+                }
+
+                // If no matches, then just pass to default
+                if (!any)
+                {
+                    authorings.Add(editorSettings.DefaultSettingsAuthoring);
                 }
             }
 

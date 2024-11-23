@@ -93,7 +93,6 @@ namespace BovineLabs.Core.Editor.Inspectors
             return componentTypes;
         }
     }
-
 }
 #endif
 

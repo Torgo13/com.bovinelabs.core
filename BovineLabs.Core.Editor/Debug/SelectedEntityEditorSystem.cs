@@ -20,7 +20,7 @@ namespace BovineLabs.Core.Editor
     public partial class SelectedEntityEditorSystem : SystemBase
     {
         [ConfigVar("debug.selection", true, "Write the current hierarchy selection to SelectedEntity and SelectedEntities.")]
-        private static readonly SharedStatic<bool> enabled = SharedStatic<bool>.GetOrCreate<SelectedEntityEditorSystem>();
+        public static readonly SharedStatic<bool> IsEnabled = SharedStatic<bool>.GetOrCreate<SelectedEntityEditorSystem>();
 
         private NativeList<int> instanceIds;
         private NativeList<Entity> entities;
@@ -48,7 +48,7 @@ namespace BovineLabs.Core.Editor
         /// <inheritdoc/>
         protected override void OnUpdate()
         {
-            if (!enabled.Data)
+            if (!IsEnabled.Data)
             {
                 return;
             }
