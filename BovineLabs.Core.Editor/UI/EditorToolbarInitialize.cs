@@ -11,6 +11,11 @@ namespace BovineLabs.Core.Editor.UI
     using UnityEditor;
     using UnityEngine.UIElements;
 
+#if UNITY_LOGGING
+#else
+    using Debug = UnityEngine.Debug;
+#endif // UNITY_LOGGING
+
     [InitializeOnLoad]
     internal static class EditorToolbarInitialize
     {

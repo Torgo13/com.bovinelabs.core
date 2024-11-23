@@ -7,7 +7,9 @@ namespace BovineLabs.Core.Extensions
     using System;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
+#if UNITY_ENTITIES
     using BovineLabs.Core.Cache;
+#endif // UNITY_ENTITIES
     using Unity.Burst;
     using Unity.Collections;
     using Unity.Collections.LowLevel.Unsafe;

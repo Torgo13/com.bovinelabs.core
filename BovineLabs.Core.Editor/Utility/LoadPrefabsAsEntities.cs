@@ -2,6 +2,8 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
+#if UNITY_ENTITIES
+
 namespace BovineLabs.Core.Editor.Utility
 {
     using System.Threading.Tasks;
@@ -139,3 +141,5 @@ namespace BovineLabs.Core.Editor.Utility
         }
     }
 }
+
+#endif // UNITY_ENTITIES

@@ -3,6 +3,8 @@
 #pragma warning disable SA1611
 #pragma warning disable SA1615
 
+#if UNITY_LOGGING
+
 namespace BovineLabs.Core
 {
     using Unity.Burst;
@@ -608,3 +610,4 @@ namespace BovineLabs.Core
         ////////////////////////////////////////////
     }
 }
+#endif // UNITY_LOGGING

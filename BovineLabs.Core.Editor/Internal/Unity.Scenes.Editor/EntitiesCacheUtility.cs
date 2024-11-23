@@ -2,6 +2,8 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
+#if UNITY_ENTITIES
+
 namespace BovineLabs.Core.Editor.Internal
 {
     public static class EntitiesCacheUtility
@@ -12,3 +14,5 @@ namespace BovineLabs.Core.Editor.Internal
         }
     }
 }
+
+#endif // UNITY_ENTITES
