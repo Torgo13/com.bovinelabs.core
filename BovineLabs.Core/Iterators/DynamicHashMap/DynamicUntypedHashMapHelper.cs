@@ -11,6 +11,7 @@ namespace BovineLabs.Core.Iterators
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using BovineLabs.Core.Assertions;
+    using BovineLabs.Core.Utility;
     using Unity.Assertions;
     using Unity.Collections;
     using Unity.Collections.LowLevel.Unsafe;
@@ -25,6 +26,7 @@ namespace BovineLabs.Core.Iterators
         internal int KeysOffset;
         internal int NextOffset;
         internal int BucketsOffset;
+        internal int TypeOffset;
         internal int DataOffset;
         internal int Count;
         internal int Capacity;
@@ -90,34 +92,21 @@ namespace BovineLabs.Core.Iterators
             }
         }
 
+        internal AllTypeIndex* Types
+        {
+            get
+            {
+                fixed (DynamicUntypedHashMapHelper<TKey>* data = &this)
+                {
+                    return (AllTypeIndex*)((byte*)data + data->TypeOffset);
+                }
+            }
+        }
+
         internal readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this.Count == 0;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int CalcCapacityCeilPow2(int count, int capacity, int log2MinGrowth)
-        {
-            capacity = math.max(math.max(1, count), capacity);
-            var newCapacity = math.max(capacity, 1 << log2MinGrowth);
-            var result = math.ceilpow2(newCapacity);
-
-            return result;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int CalcCapacityCeilPow2(int capacity, int log2MinGrowth)
-        {
-            var newCapacity = math.max(capacity, 1 << log2MinGrowth);
-            var result = math.ceilpow2(newCapacity);
-
-            return result;
-        }
-
-        private static int GetBucketSize(int capacity)
-        {
-            return capacity * 2;
         }
 
         internal static void Init(DynamicBuffer<byte> buffer, int capacity, int dataCapacity, int minGrowth)
@@ -129,8 +118,8 @@ namespace BovineLabs.Core.Iterators
             dataCapacity = CalcCapacityCeilPow2(0, dataCapacity, log2MinGrowth);
 
             var bucketCapacity = GetBucketSize(capacity);
-            var totalSize = CalculateDataSize(
-                capacity, bucketCapacity, dataCapacity, out var keyOffset, out var nextOffset, out var bucketOffset, out var dataOffset);
+            var totalSize = CalculateDataSize(capacity, bucketCapacity, dataCapacity, out var keyOffset, out var nextOffset, out var bucketOffset,
+                out var typeOffset, out var dataOffset);
 
             var hashMapDataSize = sizeof(DynamicUntypedHashMapHelper<TKey>);
             buffer.ResizeUninitialized(hashMapDataSize + totalSize);
@@ -148,6 +137,7 @@ namespace BovineLabs.Core.Iterators
             data->KeysOffset = hashMapDataSize + keyOffset;
             data->NextOffset = hashMapDataSize + nextOffset;
             data->BucketsOffset = hashMapDataSize + bucketOffset;
+            data->TypeOffset = hashMapDataSize + typeOffset;
             data->DataOffset = hashMapDataSize + dataOffset;
 
             UnsafeUtility.MemSet(data->Buckets, 0xff, data->BucketCapacity * sizeof(int));
@@ -171,19 +161,21 @@ namespace BovineLabs.Core.Iterators
         {
             Assert.IsTrue(newCapacity > data->Capacity);
 
-            var totalSize = CalculateDataSize(
-                newCapacity, newBucketCapacity, data->DataCapacity, out var keyOffset, out var nextOffset, out var bucketOffset, out var newDataOffset);
+            var totalSize = CalculateDataSize(newCapacity, newBucketCapacity, data->DataCapacity, out var keyOffset, out var nextOffset, out var bucketOffset,
+                out var typeOffset, out var dataOffset);
 
             var oldValue = (byte*)UnsafeUtility.Malloc(data->Capacity * sizeof(int), UnsafeUtility.AlignOf<byte>(), Allocator.Temp);
             var oldKeys = (TKey*)UnsafeUtility.Malloc(data->Capacity * sizeof(TKey), UnsafeUtility.AlignOf<int>(), Allocator.Temp);
             var oldNext = (int*)UnsafeUtility.Malloc(data->Capacity * sizeof(int), UnsafeUtility.AlignOf<int>(), Allocator.Temp);
             var oldBuckets = (int*)UnsafeUtility.Malloc(data->BucketCapacity * sizeof(int), UnsafeUtility.AlignOf<int>(), Allocator.Temp);
+            var oldTypes = (int*)UnsafeUtility.Malloc(data->Capacity * sizeof(AllTypeIndex), UnsafeUtility.AlignOf<AllTypeIndex>(), Allocator.Temp);
             var oldData = (int*)UnsafeUtility.Malloc(data->DataCapacity * sizeof(int), UnsafeUtility.AlignOf<int>(), Allocator.Temp);
 
             UnsafeUtility.MemCpy(oldValue, data->Values, data->Capacity * sizeof(int));
             UnsafeUtility.MemCpy(oldKeys, data->Keys, data->Capacity * sizeof(TKey));
             UnsafeUtility.MemCpy(oldNext, data->Next, data->Capacity * sizeof(int));
             UnsafeUtility.MemCpy(oldBuckets, data->Buckets, data->BucketCapacity * sizeof(int));
+            UnsafeUtility.MemCpy(oldTypes, data->Types, data->Capacity * sizeof(AllTypeIndex));
             UnsafeUtility.MemCpy(oldData, data->Data, data->DataCapacity * sizeof(int));
 
             var oldCapacity = data->Capacity;
@@ -207,27 +199,28 @@ namespace BovineLabs.Core.Iterators
             data->KeysOffset = hashMapDataSize + keyOffset;
             data->NextOffset = hashMapDataSize + nextOffset;
             data->BucketsOffset = hashMapDataSize + bucketOffset;
-            data->DataOffset = hashMapDataSize + newDataOffset;
+            data->TypeOffset = hashMapDataSize + typeOffset;
+            data->DataOffset = hashMapDataSize + dataOffset;
 
             data->Count = oldCount;
             data->DataAllocatedIndex = oldDataAllocatedIndex;
-
-            // var keys = data->Keys;
-            var next = data->Next;
-            var buckets = data->Buckets;
 
             UnsafeUtility.MemCpy(data->Values, oldValue, oldCapacity * sizeof(int));
             UnsafeUtility.MemCpy(data->Keys, oldKeys, oldCapacity * sizeof(TKey));
 
             UnsafeUtility.MemCpy(data->Data, oldData, oldDataCapacity * sizeof(int));
+            UnsafeUtility.MemCpy(data->Types, oldTypes, oldCapacity * sizeof(AllTypeIndex));
 
-            UnsafeUtility.MemCpy(next, oldNext, oldCapacity * sizeof(int));
-            UnsafeUtility.MemSet(next + oldCapacity, 0xff, (newCapacity - oldCapacity) * sizeof(int));
+            UnsafeUtility.MemCpy(data->Next, oldNext, oldCapacity * sizeof(int));
+            UnsafeUtility.MemSet(data->Next + oldCapacity, 0xff, (newCapacity - oldCapacity) * sizeof(int));
 
             // re-hash the buckets, first clear the new bucket list, then insert all values from the old list
-            UnsafeUtility.MemSet(buckets, 0xff, newBucketCapacity * 4);
+            UnsafeUtility.MemSet(data->Buckets, 0xff, newBucketCapacity * 4);
 
-            for (int bucket = 0; bucket < oldBucketCapacity; ++bucket)
+            var next = data->Next;
+            var buckets = data->Buckets;
+
+            for (var bucket = 0; bucket < oldBucketCapacity; ++bucket)
             {
                 while (oldBuckets[bucket] >= 0)
                 {
@@ -280,6 +273,7 @@ namespace BovineLabs.Core.Iterators
                 data->CheckIndexOutOfBounds(idx);
 
                 UnsafeUtility.WriteArrayElement(data->Keys, idx, key);
+                UnsafeUtility.WriteArrayElement(data->Types, idx, TypeManagerEx.GetAllTypeIndex<TValue>());
 
                 var bucket = data->GetBucket(key);
 
@@ -287,6 +281,10 @@ namespace BovineLabs.Core.Iterators
                 var next = data->Next;
                 next[idx] = data->Buckets[bucket];
                 data->Buckets[bucket] = idx;
+            }
+            else
+            {
+                data->CheckType<TValue>(idx);
             }
 
             if (isLarge)
@@ -336,6 +334,8 @@ namespace BovineLabs.Core.Iterators
         internal static ref TValue GetValue<TValue>(DynamicUntypedHashMapHelper<TKey>* data, int idx)
             where TValue : unmanaged
         {
+            data->CheckType<TValue>(idx);
+
             var isLarge = sizeof(TValue) > sizeof(int);
             if (isLarge)
             {
@@ -348,7 +348,7 @@ namespace BovineLabs.Core.Iterators
             return ref UnsafeUtility.AsRef<TValue>(data->Values + (idx * sizeof(int)));
         }
 
-        internal static void AddUnique<TValue>(DynamicBuffer<byte> buffer, ref DynamicUntypedHashMapHelper<TKey>* data, in TKey key, TValue value)
+        internal static int AddUnique<TValue>(DynamicBuffer<byte> buffer, ref DynamicUntypedHashMapHelper<TKey>* data, in TKey key, TValue value)
             where TValue : unmanaged
         {
             data->CheckDoesNotExist(key);
@@ -356,7 +356,7 @@ namespace BovineLabs.Core.Iterators
             // Allocate an entry from the free list
             if (data->Count == data->Capacity)
             {
-                int newCap = CalcCapacityCeilPow2(data->Count, data->Capacity + (1 << data->Log2MinGrowth), data->Log2MinGrowth);
+                var newCap = CalcCapacityCeilPow2(data->Count, data->Capacity + (1 << data->Log2MinGrowth), data->Log2MinGrowth);
                 Resize(buffer, ref data, newCap);
             }
 
@@ -365,6 +365,7 @@ namespace BovineLabs.Core.Iterators
             data->CheckIndexOutOfBounds(idx);
 
             UnsafeUtility.WriteArrayElement(data->Keys, idx, key);
+            UnsafeUtility.WriteArrayElement(data->Types, idx, TypeManagerEx.GetAllTypeIndex<TValue>());
 
             var bucket = data->GetBucket(key);
 
@@ -389,7 +390,7 @@ namespace BovineLabs.Core.Iterators
                     ResizeData(buffer, ref data, newCap);
                 }
 
-                int* ptr = data->Data + data->DataAllocatedIndex;
+                var ptr = data->Data + data->DataAllocatedIndex;
                 UnsafeUtility.MemCpy(ptr, &value, sizeof(TValue));
 
                 Check.Assume(sizeof(TValue) % sizeof(int) == 0);
@@ -404,6 +405,8 @@ namespace BovineLabs.Core.Iterators
                 var dst = (TValue*)(data->Values + (idx * sizeof(int)));
                 *dst = value;
             }
+
+            return idx;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -448,16 +451,20 @@ namespace BovineLabs.Core.Iterators
 
             if (idx != -1)
             {
-                if (UnsafeUtility.SizeOf<TValue>() > UnsafeUtility.SizeOf<int>())
+                this.CheckType<TValue>(idx);
+
+                var value = this.Values + (idx * sizeof(int));
+
+                if (UnsafeUtility.SizeOf<TValue>() > sizeof(int))
                 {
-                    idx = UnsafeUtility.ReadArrayElement<int>(this.Values, idx);
+                    idx = *value;
 
                     // TODO range check
                     item = *(TValue*)(this.Data + idx);
                 }
                 else
                 {
-                    item = UnsafeUtility.ReadArrayElement<TValue>(this.Values, idx);
+                    item = *(TValue*)value;
                 }
 
                 return true;
@@ -467,29 +474,51 @@ namespace BovineLabs.Core.Iterators
             return false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int CalcCapacityCeilPow2(int count, int capacity, int log2MinGrowth)
+        {
+            capacity = math.max(math.max(1, count), capacity);
+            var newCapacity = math.max(capacity, 1 << log2MinGrowth);
+            var result = math.ceilpow2(newCapacity);
+
+            return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int CalcCapacityCeilPow2(int capacity, int log2MinGrowth)
+        {
+            var newCapacity = math.max(capacity, 1 << log2MinGrowth);
+            var result = math.ceilpow2(newCapacity);
+
+            return result;
+        }
+
+        private static int GetBucketSize(int capacity)
+        {
+            return capacity * 2;
+        }
+
         private static int CalculateDataSize(
-            int capacity,
-            int bucketCapacity,
-            int dataCapacity,
-            out int outKeyOffset,
-            out int outNextOffset,
-            out int outBucketOffset,
+            int capacity, int bucketCapacity, int dataCapacity, out int outKeyOffset, out int outNextOffset, out int outBucketOffset, out int outTypeOffset,
             out int outDataOffset)
         {
             var sizeOfTKey = sizeof(TKey);
             var sizeOfInt = sizeof(int);
+            var sizeOfTypeIndex = sizeof(AllTypeIndex);
 
             var valuesSize = sizeOfInt * capacity;
             var keysSize = sizeOfTKey * capacity;
             var nextSize = sizeOfInt * capacity;
             var bucketSize = sizeOfInt * bucketCapacity;
+            var typeSize = sizeOfTypeIndex * capacity;
             var dataSize = sizeOfInt * dataCapacity;
-            var totalSize = valuesSize + keysSize + nextSize + bucketSize + dataSize;
+            var totalSize = valuesSize + keysSize + nextSize + bucketSize + typeSize + dataSize;
 
             outKeyOffset = valuesSize;
             outNextOffset = outKeyOffset + keysSize;
             outBucketOffset = outNextOffset + nextSize;
-            outDataOffset = outBucketOffset + bucketSize;
+            outTypeOffset = outBucketOffset + bucketSize;
+            outDataOffset = outTypeOffset + typeSize;
 
             return totalSize;
         }
@@ -513,6 +542,20 @@ namespace BovineLabs.Core.Iterators
             if ((uint)idx >= (uint)this.Capacity)
             {
                 throw new InvalidOperationException($"Internal HashMap error. idx {idx}");
+            }
+        }
+
+        [Conditional("ENABLE_UNITY_COLLECTIONS_CHECKS")]
+        [Conditional("UNITY_DOTS_DEBUG")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CheckType<TValue>(int idx)
+            where TValue : unmanaged
+        {
+            var expected = TypeManagerEx.GetAllTypeIndex<TValue>();
+            var actual = UnsafeUtility.ReadArrayElement<AllTypeIndex>(this.Types, idx);
+            if (!expected.Equals(actual))
+            {
+                throw new InvalidOperationException($"Type {actual.Value} does not match stored {expected.Value}");
             }
         }
     }

@@ -19,7 +19,15 @@ namespace BovineLabs.Core.Extensions
                 return entityQueryBuilder;
             }
 
-            var list = new FixedList32Bytes<ComponentType> { new() { TypeIndex = type.TypeIndex, AccessModeType = ComponentType.AccessMode.ReadOnly } };
+            var list = new FixedList32Bytes<ComponentType>
+            {
+                new()
+                {
+                    TypeIndex = type.TypeIndex,
+                    AccessModeType = ComponentType.AccessMode.ReadOnly,
+                },
+            };
+
             return entityQueryBuilder.WithAll(ref list);
         }
 
@@ -30,7 +38,15 @@ namespace BovineLabs.Core.Extensions
                 return entityQueryBuilder;
             }
 
-            var list = new FixedList32Bytes<ComponentType> { new() { TypeIndex = type.TypeIndex, AccessModeType = ComponentType.AccessMode.ReadWrite } };
+            var list = new FixedList32Bytes<ComponentType>
+            {
+                new()
+                {
+                    TypeIndex = type.TypeIndex,
+                    AccessModeType = ComponentType.AccessMode.ReadWrite,
+                },
+            };
+
             return entityQueryBuilder.WithAll(ref list);
         }
 
@@ -41,7 +57,15 @@ namespace BovineLabs.Core.Extensions
                 return entityQueryBuilder;
             }
 
-            var list = new FixedList32Bytes<ComponentType> { new() { TypeIndex = type.TypeIndex, AccessModeType = ComponentType.AccessMode.ReadOnly } };
+            var list = new FixedList32Bytes<ComponentType>
+            {
+                new()
+                {
+                    TypeIndex = type.TypeIndex,
+                    AccessModeType = ComponentType.AccessMode.ReadOnly,
+                },
+            };
+
             return entityQueryBuilder.WithAny(ref list);
         }
 
@@ -52,7 +76,15 @@ namespace BovineLabs.Core.Extensions
                 return entityQueryBuilder;
             }
 
-            var list = new FixedList32Bytes<ComponentType> { new() { TypeIndex = type.TypeIndex, AccessModeType = ComponentType.AccessMode.ReadWrite } };
+            var list = new FixedList32Bytes<ComponentType>
+            {
+                new()
+                {
+                    TypeIndex = type.TypeIndex,
+                    AccessModeType = ComponentType.AccessMode.ReadWrite,
+                },
+            };
+
             return entityQueryBuilder.WithAny(ref list);
         }
 

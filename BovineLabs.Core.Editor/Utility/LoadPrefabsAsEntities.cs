@@ -87,7 +87,7 @@ namespace BovineLabs.Core.Editor.Utility
 
                 if (EditorGUILayout.DropdownButton(new GUIContent(w), FocusType.Passive))
                 {
-                    GenericMenu menu = new GenericMenu();
+                    var menu = new GenericMenu();
 
                     for (var index = 0; index < World.All.Count; index++)
                     {

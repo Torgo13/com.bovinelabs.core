@@ -9,6 +9,7 @@ namespace BovineLabs.Core.Collections
     using Unity.Collections.LowLevel.Unsafe;
     using Unity.Jobs.LowLevel.Unsafe;
     using Unity.Mathematics;
+    using UnityEngine.Assertions;
 
     /// <summary> A thread safe random. As it's thread based it should not be used for anything requiring determinism. </summary>
     public unsafe struct ThreadRandom
@@ -17,9 +18,6 @@ namespace BovineLabs.Core.Collections
 
         [NativeDisableUnsafePtrRestriction]
         private Randoms* buffer;
-
-        [NativeSetThreadIndex]
-        private int threadIndex;
 
         public ThreadRandom(uint seed, AllocatorManager.AllocatorHandle allocator)
         {
@@ -33,15 +31,16 @@ namespace BovineLabs.Core.Collections
             {
                 this.buffer[i].Random = Random.CreateFromIndex((uint)(seed + i));
             }
-
-            this.threadIndex = 0;
         }
 
         public readonly bool IsCreated => this.buffer != null;
 
         public ref Random GetRandomRef()
         {
-            ref var randoms = ref UnsafeUtility.ArrayElementAsRef<Randoms>(this.buffer, this.threadIndex);
+#if UNITY_EDITOR
+            Assert.IsTrue(JobsUtility.IsExecutingJob || UnityEditorInternal.InternalEditorUtility.CurrentThreadIsMainThread());
+#endif
+            ref var randoms = ref UnsafeUtility.ArrayElementAsRef<Randoms>(this.buffer, JobsUtility.ThreadIndex);
             return ref randoms.Random;
         }
 
@@ -56,6 +55,7 @@ namespace BovineLabs.Core.Collections
             this.buffer = null;
         }
 
+        // 1 random per cache line to avoid false sharing
         [StructLayout(LayoutKind.Explicit, Size = JobsUtility.CacheLineSize)]
         private struct Randoms
         {

@@ -34,7 +34,12 @@ namespace BovineLabs.Core.Authoring.Entities
             [BurstCompile]
             public void OnUpdate(ref SystemState state)
             {
-                var query = SystemAPI.QueryBuilder().WithAll<RemovePhysicsVelocityBaking, PhysicsVelocity>().WithOptions(EntityQueryOptions.IncludePrefab).Build();
+                var query = SystemAPI
+                    .QueryBuilder()
+                    .WithAll<RemovePhysicsVelocityBaking, PhysicsVelocity>()
+                    .WithOptions(EntityQueryOptions.IncludePrefab)
+                    .Build();
+
                 state.EntityManager.RemoveComponent<PhysicsVelocity>(query);
             }
         }

@@ -46,9 +46,7 @@ namespace BovineLabs.Core.Utility
 
             this.lastPushedTime = group.World.Unmanaged.Time.ElapsedTime;
 
-            group.World.PushTime(new TimeData(
-                group.World.Unmanaged.Time.ElapsedTime,
-                deltaTime));
+            group.World.PushTime(new TimeData(group.World.Unmanaged.Time.ElapsedTime, deltaTime));
 
             this.didPushTime = true;
             return true;

@@ -8,12 +8,14 @@ namespace BovineLabs.Core.Model
 {
     using Unity.Assertions;
     using Unity.Burst;
-    using Unity.Burst.CompilerServices;
     using Unity.Burst.Intrinsics;
     using Unity.Collections;
     using Unity.Collections.LowLevel.Unsafe;
     using Unity.Entities;
     using Unity.Mathematics;
+#if UNITY_BURST_EXPERIMENTAL_LOOP_INTRINSICS
+    using Unity.Burst.CompilerServices;
+#endif
 
     public struct TimerFixed<TOn, TRemaining, TActive>
         where TOn : unmanaged, IComponentData
@@ -46,12 +48,7 @@ namespace BovineLabs.Core.Model
 
             this.query = state.GetEntityQuery(new EntityQueryDesc
             {
-                All = new[]
-                {
-                    ComponentType.ReadWrite<TRemaining>(),
-                    ComponentType.ReadWrite<TOn>(),
-                    ComponentType.ReadOnly<TActive>(),
-                },
+                All = new[] { ComponentType.ReadWrite<TRemaining>(), ComponentType.ReadWrite<TOn>(), ComponentType.ReadOnly<TActive>() },
             });
         }
 

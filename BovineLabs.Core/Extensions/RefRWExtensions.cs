@@ -8,7 +8,7 @@ namespace BovineLabs.Core.Extensions
 {
     using Unity.Entities;
 
-    public unsafe static class RefRWExtensions
+    public static unsafe class RefRWExtensions
     {
         public static RefRW<T> Create<T>(T* ptr, int index, ComponentTypeHandle<T> handle)
             where T : unmanaged, IComponentData

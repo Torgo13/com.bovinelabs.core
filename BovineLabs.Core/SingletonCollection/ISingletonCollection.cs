@@ -6,7 +6,6 @@
 
 namespace BovineLabs.Core.SingletonCollection
 {
-    using System;
     using Unity.Collections;
     using Unity.Collections.LowLevel.Unsafe;
     using Unity.Entities;

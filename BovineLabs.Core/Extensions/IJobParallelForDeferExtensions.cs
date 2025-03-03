@@ -13,8 +13,7 @@ namespace BovineLabs.Core.Extensions
 
     public static class IJobParallelForDeferExtensions
     {
-        public static unsafe JobHandle Schedule<T, U>(this T jobData, DynamicBuffer<U> list, int innerloopBatchCount,
-            JobHandle dependsOn = default)
+        public static unsafe JobHandle Schedule<T, U>(this T jobData, DynamicBuffer<U> list, int innerloopBatchCount, JobHandle dependsOn = default)
             where T : struct, IJobParallelForDefer
             where U : unmanaged
         {

@@ -1,4 +1,8 @@
-﻿#if UNITY_ENTITES
+// <copyright file="BlobCurveHeader.cs" company="BovineLabs">
+//     Copyright (c) BovineLabs. All rights reserved.
+// </copyright>
+
+#if UNITY_ENTITES
 
 namespace BovineLabs.Core.Collections
 {
@@ -32,7 +36,7 @@ namespace BovineLabs.Core.Collections
             var wrappedTime = math.clamp(time, this.StartTime, this.EndTime);
             var isPrev = wrappedTime < cache.NeighborhoodTimes.x;
             var isPost = wrappedTime > cache.NeighborhoodTimes.y;
-            if (cache.Index >= 0 & !(isPrev | isPost))
+            if ((cache.Index >= 0) & !(isPrev | isPost))
             {
                 var d = cache.NeighborhoodTimes.y - cache.NeighborhoodTimes.x;
                 t = math.select((wrappedTime - cache.NeighborhoodTimes.x) / d, 0, d == 0);
@@ -147,7 +151,7 @@ namespace BovineLabs.Core.Collections
 
             var isPrev = wrappedTime < cache.NeighborhoodTimes.x;
             var isPost = wrappedTime > cache.NeighborhoodTimes.y;
-            if (cache.Index >= 0 & !(isPrev | isPost))
+            if ((cache.Index >= 0) & !(isPrev | isPost))
             {
                 duration = cache.NeighborhoodTimes.y - cache.NeighborhoodTimes.x;
                 t = math.select((wrappedTime - cache.NeighborhoodTimes.x) / duration, 0, duration == 0);

@@ -41,8 +41,9 @@ namespace BovineLabs.Core.Collections
             var bucket = key.GetHashCode() & this.bucketCapacityMask;
 
             if (!multi && this.ContainsKey(bucket, key))
+            {
                 return false;
-
+            }
 
             var index = c++;
             this.keys[index] = key;
@@ -73,7 +74,6 @@ namespace BovineLabs.Core.Collections
             }
 #endif
 
-
             var index = c++;
             this.keys[index] = key;
             // this.values[index] = item;
@@ -96,14 +96,18 @@ namespace BovineLabs.Core.Collections
             var index = this.buckets[bucket];
 
             if (index < 0)
+            {
                 return false;
+            }
 
             while (!this.keys[index].Equals(key))
             {
                 index = this.next[index];
 
                 if (index < 0)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -112,9 +116,14 @@ namespace BovineLabs.Core.Collections
         private void Clear()
         {
             for (var i = 0; i < this.buckets.Length; i++)
+            {
                 this.buckets[i] = -1;
+            }
+
             for (var i = 0; i < this.next.Length; i++)
+            {
                 this.next[i] = -1;
+            }
         }
 
         internal BlobBuilderHashMapData(int capacity, int bucketCapacityRatio, ref BlobBuilder blobBuilder, ref BlobHashMapData<TKey, TValue> data)

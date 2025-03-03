@@ -16,8 +16,8 @@ namespace BovineLabs.Core.Iterators
     /// An enumerator over the values of a set.
     /// </summary>
     /// <remarks>
-    /// In an enumerator's initial state, <see cref="Current"/> is invalid.
-    /// The first <see cref="MoveNext"/> call advances the enumerator to the first value.
+    /// In an enumerator's initial state, <see cref="Current" /> is invalid.
+    /// The first <see cref="MoveNext" /> call advances the enumerator to the first value.
     /// </remarks>
     [NativeContainer]
     [NativeContainerIsReadOnly]
@@ -45,7 +45,7 @@ namespace BovineLabs.Core.Iterators
         object IEnumerator.Current => this.Current;
 
         /// <summary> Advances the enumerator to the next value. </summary>
-        /// <returns>True if `Current` is valid to read after the call.</returns>
+        /// <returns> True if `Current` is valid to read after the call. </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
@@ -61,8 +61,9 @@ namespace BovineLabs.Core.Iterators
         }
 
         /// <summary> Does nothing. </summary>
-        public void Dispose() { }
-
+        public void Dispose()
+        {
+        }
     }
 }
 

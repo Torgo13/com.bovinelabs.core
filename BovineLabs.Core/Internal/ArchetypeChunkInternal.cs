@@ -10,7 +10,6 @@ namespace BovineLabs.Core.Internal
     using System.Diagnostics;
     using BovineLabs.Core.Extensions;
     using Unity.Burst.CompilerServices;
-    using Unity.Collections.LowLevel.Unsafe;
     using Unity.Entities;
 
     public static class ArchetypeChunkInternal
@@ -38,8 +37,9 @@ namespace BovineLabs.Core.Internal
 #if (UNITY_EDITOR || DEVELOPMENT_BUILD) && !DISABLE_ENTITIES_JOURNALING
             if (Hint.Unlikely(chunk.m_EntityComponentStore->m_RecordToJournal != 0))
             {
-                byte* ptr = ChunkDataUtility.GetComponentDataWithTypeRW(
-                    chunk.m_Chunk, archetype, 0, handle.m_TypeIndex, handle.GlobalSystemVersion, ref handle.m_LookupCache);
+                var ptr = ChunkDataUtility.GetComponentDataWithTypeRW(chunk.m_Chunk, archetype, 0, handle.m_TypeIndex, handle.GlobalSystemVersion,
+                    ref handle.m_LookupCache);
+
                 chunk.JournalAddRecordGetComponentDataRW(ref handle, ptr, handle.m_SizeInChunk * chunk.Count);
             }
 #endif
@@ -68,8 +68,9 @@ namespace BovineLabs.Core.Internal
 #if (UNITY_EDITOR || DEVELOPMENT_BUILD) && !DISABLE_ENTITIES_JOURNALING
             if (Hint.Unlikely(chunk.m_EntityComponentStore->m_RecordToJournal != 0))
             {
-                byte* ptr = ChunkDataUtility.GetComponentDataWithTypeRW(
-                    chunk.m_Chunk, archetype, 0, handle.m_TypeIndex, handle.GlobalSystemVersion, ref handle.m_LookupCache);
+                var ptr = ChunkDataUtility.GetComponentDataWithTypeRW(chunk.m_Chunk, archetype, 0, handle.m_TypeIndex, handle.GlobalSystemVersion,
+                    ref handle.m_LookupCache);
+
                 chunk.JournalAddRecordGetComponentDataRW(ref handle, ptr, handle.m_SizeInChunk * chunk.Count);
             }
 #endif
@@ -150,7 +151,7 @@ namespace BovineLabs.Core.Internal
 #if (UNITY_EDITOR || DEVELOPMENT_BUILD) && !DISABLE_ENTITIES_JOURNALING
             if (Hint.Unlikely(chunk.m_EntityComponentStore->m_RecordToJournal != 0))
             {
-                byte* ptr = ChunkDataUtility.GetComponentDataRW(chunk.m_Chunk, archetype, 0, typeIndexInArchetype, handle.GlobalSystemVersion);
+                var ptr = ChunkDataUtility.GetComponentDataRW(chunk.m_Chunk, archetype, 0, typeIndexInArchetype, handle.GlobalSystemVersion);
                 var typeSize = archetype->SizeOfs[typeIndexInArchetype];
                 var length = chunk.Count;
                 var byteLen = length * typeSize;

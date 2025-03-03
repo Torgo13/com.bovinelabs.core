@@ -1,4 +1,8 @@
-﻿#if UNITY_ENTITES
+// <copyright file="BlobCurveSamplerT.cs" company="BovineLabs">
+//     Copyright (c) BovineLabs. All rights reserved.
+// </copyright>
+
+#if UNITY_ENTITES
 
 namespace BovineLabs.Core.Collections
 {
@@ -47,7 +51,7 @@ namespace BovineLabs.Core.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T EvaluateIgnoreWrapModeWithoutCache(in float time)
         {
-            var r =  this.Curve.Value.EvaluateIgnoreWrapMode(time);
+            var r = this.Curve.Value.EvaluateIgnoreWrapMode(time);
             return UnsafeUtility.As<float, T>(ref r);
         }
     }

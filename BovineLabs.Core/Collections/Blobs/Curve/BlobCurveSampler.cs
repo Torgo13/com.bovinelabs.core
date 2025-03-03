@@ -1,4 +1,8 @@
-﻿#if UNITY_ENTITES
+// <copyright file="BlobCurveSampler.cs" company="BovineLabs">
+//     Copyright (c) BovineLabs. All rights reserved.
+// </copyright>
+
+#if UNITY_ENTITES
 
 namespace BovineLabs.Core.Collections
 {

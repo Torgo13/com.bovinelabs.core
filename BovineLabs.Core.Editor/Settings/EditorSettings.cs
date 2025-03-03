@@ -5,6 +5,7 @@
 namespace BovineLabs.Core.Editor.Settings
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 #if UNITY_ENTITES
     using BovineLabs.Core.Authoring.Settings;
@@ -39,7 +40,7 @@ namespace BovineLabs.Core.Editor.Settings
         private KeyAuthoring[] settingAuthoring = { new() { World = "service" }, new() { World = "shared" } };
 
 #if !BL_DISABLE_SUBSCENE
-        public System.Collections.Generic.IReadOnlyList<SceneAsset> PrebakeScenes => this.prebakeScenes;
+        public IReadOnlyList<SceneAsset> PrebakeScenes => this.prebakeScenes;
 #endif
 
         public SettingsAuthoring? DefaultSettingsAuthoring => this.defaultSettingsAuthoring;

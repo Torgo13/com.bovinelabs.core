@@ -21,8 +21,7 @@ namespace BovineLabs.Core.Editor.Inspectors
         {
         }
 
-        private DynamicHashSet<T> GetSet =>
-            this.Context.EntityManager.GetBuffer<TBuffer>(this.Context.Entity).AsHashSet<TBuffer, T>();
+        private DynamicHashSet<T> GetSet => this.Context.EntityManager.GetBuffer<TBuffer>(this.Context.Entity).AsHashSet<TBuffer, T>();
 
         public override bool IsValid()
         {

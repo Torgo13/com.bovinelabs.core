@@ -37,7 +37,7 @@ namespace BovineLabs.Core.Extensions
         /// <returns> </returns>
         public static bool IsClientWorld(this World world)
         {
-            return ((world.Flags & WorldFlags.GameClient) == WorldFlags.GameClient) || world.IsThinClientWorld();
+            return (world.Flags & WorldFlags.GameClient) == WorldFlags.GameClient || world.IsThinClientWorld();
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace BovineLabs.Core.Extensions
         /// <returns> </returns>
         public static bool IsClientWorld(this WorldUnmanaged world)
         {
-            return ((world.Flags & WorldFlags.GameClient) == WorldFlags.GameClient) || world.IsThinClientWorld();
+            return (world.Flags & WorldFlags.GameClient) == WorldFlags.GameClient || world.IsThinClientWorld();
         }
 
         /// <summary>

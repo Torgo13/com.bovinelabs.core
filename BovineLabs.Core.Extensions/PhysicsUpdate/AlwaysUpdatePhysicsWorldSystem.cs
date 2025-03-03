@@ -6,13 +6,13 @@
 namespace BovineLabs.Core.PhysicsUpdate
 {
     using BovineLabs.Core.Extensions;
+    using BovineLabs.Core.Groups;
     using Unity.Entities;
     using Unity.Jobs;
     using Unity.Physics;
     using Unity.Physics.Systems;
 
-    [UpdateAfter(typeof(FixedStepSimulationSystemGroup))]
-    [UpdateInGroup(typeof(SimulationSystemGroup), OrderFirst = true)]
+    [UpdateInGroup(typeof(BeforeTransformSystemGroup), OrderFirst = true)]
     [CreateAfter(typeof(BuildPhysicsWorld))]
     public unsafe partial class AlwaysUpdatePhysicsWorldSystem : SystemBase
     {
@@ -20,7 +20,7 @@ namespace BovineLabs.Core.PhysicsUpdate
         private SystemHandle buildPhysicsWorldDependencyResolver;
         private SystemState* buildPhysicsWorldSystemState;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnCreate()
         {
             this.buildPhysicsWorld = this.World.GetExistingSystem<BuildPhysicsWorld>();
@@ -30,7 +30,7 @@ namespace BovineLabs.Core.PhysicsUpdate
             this.CheckedStateRef.AddDependency(TypeManager.GetTypeIndex<PhysicsWorldSingleton>());
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnUpdate()
         {
             var physicsUpdated = SystemAPI.GetSingletonRW<AlwaysUpdatePhysicsWorld>();

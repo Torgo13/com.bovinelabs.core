@@ -5,9 +5,7 @@
 #if !BL_DISABLE_CAMERA
 namespace BovineLabs.Core.Camera
 {
-    using BovineLabs.Core;
     using BovineLabs.Core.Groups;
-    using BovineLabs.Core.Input;
     using Unity.Entities;
     using Unity.Transforms;
     using UnityEngine;
@@ -21,28 +19,22 @@ namespace BovineLabs.Core.Camera
             this.RequireForUpdate<CameraMain>();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnUpdate()
         {
-            var cameraQuery = SystemAPI.QueryBuilder()
-                .WithAllRW<LocalTransform>()
-                .WithAll<CameraMain, Camera, Transform>()
-                .Build();
-
-            var noCameraQuery = SystemAPI.QueryBuilder()
-                .WithAllRW<LocalTransform>()
-                .WithAll<CameraMain>()
-                .WithNone<Camera, Transform>()
-                .Build();
+            var cameraQuery = SystemAPI.QueryBuilder().WithAllRW<LocalTransform>().WithAll<CameraMain, Camera, Transform>().Build();
 
             Entity entity;
 
-            if (noCameraQuery.IsEmptyIgnoreFilter)
+            if (cameraQuery.IsEmptyIgnoreFilter)
             {
-                entity = cameraQuery.GetSingletonEntity();
-            }
-            else
-            {
+                var noCameraQuery = SystemAPI.QueryBuilder().WithAllRW<LocalTransform>().WithAll<CameraMain>().WithNone<Camera, Transform>().Build();
+
+                if (noCameraQuery.IsEmptyIgnoreFilter)
+                {
+                    return;
+                }
+
                 entity = noCameraQuery.GetSingletonEntity();
 
                 var cam = Camera.main;
@@ -56,6 +48,10 @@ namespace BovineLabs.Core.Camera
                 this.EntityManager.AddComponent(entity, componentTypeSet);
                 this.EntityManager.AddComponentObject(entity, cam);
                 this.EntityManager.AddComponentObject(entity, cam.transform);
+            }
+            else
+            {
+                entity = cameraQuery.GetSingletonEntity();
             }
 
             var camera = cameraQuery.GetSingleton<Camera>();

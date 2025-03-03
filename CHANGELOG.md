@@ -1,4 +1,63 @@
 # Changelog
+## [1.3.5] - 2025-02-19
+### Added
+* Exposed InspectorUtility
+* Thread check to ThreadRandom
+* WeakObjectReferenceInspector
+* DynamicUntypedHashMap.Contains
+* GameObject Inspector search, can be disabled with BL_DISABLE_INSPECTOR_SEARCH if you have your own solution already
+* Added ObjectInstantiate workflow for object management
+* Pin for managed objects
+
+### Changed
+* Reworked pause
+* UnityObjectRefInspector can now update
+* Continued improvements to ReflectionUtility performance and caching
+
+### Fixed
+* UNITY_BURST_EXPERIMENTAL_LOOP_INTRINSICS errors
+* DynamicUntypedHashMap.TryGetValue when sizeof(TValue) < sizeof(4)
+
+### Remove
+* AlwaysUpdateSystemGroup as it's no longer required
+
+### Documentation
+* GlobalRandom
+* Input
+
+## [1.3.4] - 2025-01-28
+### Added
+* Added HashSet support to IJobHashMapDefer
+* GetChunkComponent to ComponentLookup
+* Type safety checks to DynameUntypedhashMap
+* WeakObjectReferenceExtensions and UnityObjectRefExtensions to get internal id
+* BlobPerfectHashMap
+* EntityBlob allowing a single Blob that automatically contains multiple BlobAssetReferences
+* HashSet support to IJobHashMapDefer
+* TypeManagerEx can now provide an index for all unmanaged types
+* GetUniqueKeyArray(NativeList<TKey>) to NativeMultiHashMap and NativeParallelMultiHashMap
+* More Caching to ReflectionUtility
+* Global Random
+* IUpdateWhilePaused support to unmanaged systems
+* PauseUtility.UpdateWhilePaused for 3rd party libraries but use IUpdateWhilePaused for your own systems
+* Support for Entities 1.3.9
+
+### Changed
+* Standardized code
+* Significantly improved attribute reflection speed
+* ObjectDefinitions no longer require LifeCycle (but still have extra support for it)
+
+### Fixed
+* Logging directory
+* DynameUntypedhashMap.GetOrAddRef on first frame would return wrong value 
+* StripSystem out of range exception
+* UNITY_CLIENT build error
+* Conditional wrapping for SubSceneLoadAuthoringDataEditor
+* A potential error in ObjectDefinitionAuthoring as it was using EditorSettingsUtility not AuthoringSettingsUtility
+
+### Removed
+* Entropy - use GlobalRandom instead
+
 ## [1.3.3] - 2024-11-09
 ### Added
 * WorldAllocator

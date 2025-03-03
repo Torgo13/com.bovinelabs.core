@@ -197,7 +197,7 @@ namespace BovineLabs.Core.Iterators
                 // re-hash the buckets, first clear the new bucket list, then insert all values from the old list
                 UnsafeUtility.MemSet(buckets, 0xff, newBucketCapacity * 4);
 
-                for (int bucket = 0; bucket < oldBucketCapacity; ++bucket)
+                for (var bucket = 0; bucket < oldBucketCapacity; ++bucket)
                 {
                     while (oldBuckets[bucket] >= 0)
                     {
@@ -221,7 +221,7 @@ namespace BovineLabs.Core.Iterators
                 // TODO can this be made faster?
                 for (int i = 0, num = oldBucketCapacity; i < num; ++i)
                 {
-                    for (int idx = oldBuckets[i]; idx != -1; idx = oldNext[idx])
+                    for (var idx = oldBuckets[i]; idx != -1; idx = oldNext[idx])
                     {
                         var newIdx = data->AddNoCollideNoAlloc(oldKeys[idx]);
                         UnsafeUtility.MemCpy(data->Values + (sizeOfT * newIdx), oldValue + (sizeOfT * idx), sizeOfT);
@@ -276,7 +276,7 @@ namespace BovineLabs.Core.Iterators
             // Allocate an entry from the free list
             if (data->AllocatedIndex >= data->Capacity && data->FirstFreeIdx < 0)
             {
-                int newCap = CalcCapacityCeilPow2(data->Count, data->Capacity + (1 << data->Log2MinGrowth), data->Log2MinGrowth);
+                var newCap = CalcCapacityCeilPow2(data->Count, data->Capacity + (1 << data->Log2MinGrowth), data->Log2MinGrowth);
                 Resize(buffer, ref data, newCap);
             }
 
@@ -310,7 +310,7 @@ namespace BovineLabs.Core.Iterators
             // Allocate an entry from the free list
             if (data->AllocatedIndex >= data->Capacity && data->FirstFreeIdx < 0)
             {
-                int newCap = CalcCapacityCeilPow2(data->Count, data->Capacity + (1 << data->Log2MinGrowth), data->Log2MinGrowth);
+                var newCap = CalcCapacityCeilPow2(data->Count, data->Capacity + (1 << data->Log2MinGrowth), data->Log2MinGrowth);
                 Resize(buffer, ref data, newCap);
             }
 
@@ -339,7 +339,8 @@ namespace BovineLabs.Core.Iterators
             return idx;
         }
 
-        internal static void AddBatchUnsafe(DynamicBuffer<byte> buffer, ref DynamicHashMapHelper<TKey>* data, [NoAlias] TKey* keys, [NoAlias] byte* values, int length)
+        internal static void AddBatchUnsafe(
+            DynamicBuffer<byte> buffer, ref DynamicHashMapHelper<TKey>* data, [NoAlias] TKey* keys, [NoAlias] byte* values, int length)
         {
             var helper = buffer.AsHelper<TKey>();
 
@@ -372,7 +373,8 @@ namespace BovineLabs.Core.Iterators
             helper->Count += length;
         }
 
-        internal static void AddBatchUnsafe<TValue>(DynamicBuffer<byte> buffer, ref DynamicHashMapHelper<TKey>* data, NativeSlice<TKey> keys, [NoAlias] NativeSlice<TValue> values)
+        internal static void AddBatchUnsafe<TValue>(
+            DynamicBuffer<byte> buffer, ref DynamicHashMapHelper<TKey>* data, NativeSlice<TKey> keys, [NoAlias] NativeSlice<TValue> values)
             where TValue : unmanaged
         {
             var helper = buffer.AsHelper<TKey>();
@@ -411,7 +413,8 @@ namespace BovineLabs.Core.Iterators
             helper->Count += length;
         }
 
-        internal static void AddBatchUnsafe<TValue>(DynamicBuffer<byte> buffer, ref DynamicHashMapHelper<TKey>* data, NativeSlice<TKey> keys, [NoAlias] NativeArray<TValue> values)
+        internal static void AddBatchUnsafe<TValue>(
+            DynamicBuffer<byte> buffer, ref DynamicHashMapHelper<TKey>* data, NativeSlice<TKey> keys, [NoAlias] NativeArray<TValue> values)
             where TValue : unmanaged
         {
             var helper = buffer.AsHelper<TKey>();
@@ -579,7 +582,7 @@ namespace BovineLabs.Core.Iterators
                         }
 
                         // And free the index
-                        int nextIdx = this.Next[entryIdx];
+                        var nextIdx = this.Next[entryIdx];
                         this.Next[entryIdx] = this.FirstFreeIdx;
                         this.FirstFreeIdx = entryIdx;
                         entryIdx = nextIdx;
@@ -697,7 +700,7 @@ namespace BovineLabs.Core.Iterators
 
             for (int i = 0, count = 0, max = result.Length, capacity = this.BucketCapacity; i < capacity && count < max; ++i)
             {
-                int bucket = buckets[i];
+                var bucket = buckets[i];
 
                 while (bucket != -1)
                 {
@@ -721,7 +724,7 @@ namespace BovineLabs.Core.Iterators
 
             for (int i = 0, count = 0, max = result.Length, capacity = this.BucketCapacity; i < capacity && count < max; ++i)
             {
-                int bucket = buckets[i];
+                var bucket = buckets[i];
 
                 while (bucket != -1)
                 {
@@ -753,10 +756,10 @@ namespace BovineLabs.Core.Iterators
 
             // var shift = count - le
             UnsafeUtility.MemMove(keys + start, keys + start + length, UnsafeUtility.SizeOf<TKey>() * shift);
-            UnsafeUtility.MemMove(values + start * this.SizeOfTValue, values + (start + length) * this.SizeOfTValue, shift * this.SizeOfTValue);
+            UnsafeUtility.MemMove(values + (start * this.SizeOfTValue), values + ((start + length) * this.SizeOfTValue), shift * this.SizeOfTValue);
 
             UnsafeUtility.MemSet(this.Buckets, 0xff, this.BucketCapacity * sizeof(int));
-            UnsafeUtility.MemSet(this.Next + this.Count - length, 0xff, length * sizeof(int)); // only need to clear replaced elements
+            UnsafeUtility.MemSet((this.Next + this.Count) - length, 0xff, length * sizeof(int)); // only need to clear replaced elements
 
             this.AllocatedIndex -= length;
             this.Count -= length;
@@ -764,7 +767,7 @@ namespace BovineLabs.Core.Iterators
             var buckets = this.Buckets;
             var next = this.Next;
 
-            for (var idx = 0; idx < Count; idx++)
+            for (var idx = 0; idx < this.Count; idx++)
             {
                 var bucket = keys[idx].GetHashCode() & this.BucketCapacityMask;
                 next[idx] = buckets[bucket];
@@ -800,7 +803,8 @@ namespace BovineLabs.Core.Iterators
             return idx;
         }
 
-        private static int CalculateDataSize(int capacity, int bucketCapacity, int sizeOfTValue, out int outKeyOffset, out int outNextOffset, out int outBucketOffset)
+        private static int CalculateDataSize(
+            int capacity, int bucketCapacity, int sizeOfTValue, out int outKeyOffset, out int outNextOffset, out int outBucketOffset)
         {
             var sizeOfTKey = sizeof(TKey);
             var sizeOfInt = sizeof(int);
@@ -901,7 +905,11 @@ namespace BovineLabs.Core.Iterators
             internal KVPair<TKey, TValue> GetCurrent<TValue>()
                 where TValue : unmanaged
             {
-                return new KVPair<TKey, TValue> { Data = this.Data, Index = this.Index };
+                return new KVPair<TKey, TValue>
+                {
+                    Data = this.Data,
+                    Index = this.Index,
+                };
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
