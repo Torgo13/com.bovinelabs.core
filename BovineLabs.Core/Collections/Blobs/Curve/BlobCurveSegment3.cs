@@ -6,9 +6,11 @@
 
 namespace BovineLabs.Core.Collections
 {
-#if UNITY_ASSERTIONS
+#if UNITY_6000_0_OR_NEWER
     using Unity.Assertions;
-#endif // UNITY_ASSERTIONS
+#else
+    using UnityEngine.Assertions;
+#endif // UNITY_6000_0_OR_NEWER
     using Unity.Mathematics;
     using UnityEngine;
 
@@ -38,13 +40,11 @@ namespace BovineLabs.Core.Collections
         /// <summary> Convert From Keyframe Pair </summary>
         public BlobCurveSegment3(Keyframe k0x, Keyframe k0y, Keyframe k0z, Keyframe k1x, Keyframe k1y, Keyframe k1z)
         {
-#if UNITY_ASSERTIONS
             Assert.IsTrue(
                 Mathf.Approximately(k0x.time, k0y.time) &&
                 Mathf.Approximately(k1x.time, k1y.time) &&
                 Mathf.Approximately(k0x.time, k0z.time) &&
                 Mathf.Approximately(k1x.time, k1z.time), "Time not sync");
-#endif // UNITY_ASSERTIONS
             var duration = k1x.time - k0x.time;
             this.Factors = new float4x3(BlobShared.UnityFactor(k0x.value, k0x.outTangent, k1x.inTangent, k1x.value, duration),
                 BlobShared.UnityFactor(k0y.value, k0y.outTangent, k1y.inTangent, k1y.value, duration),
@@ -80,3 +80,5 @@ namespace BovineLabs.Core.Collections
         }
     }
 }
+
+#endif // UNITY_ENTITES

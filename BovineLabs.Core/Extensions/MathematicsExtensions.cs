@@ -2,8 +2,6 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
-#if UNITY_ENTITES
-
 namespace BovineLabs.Core.Extensions
 {
     using System.Runtime.CompilerServices;
@@ -12,6 +10,8 @@ namespace BovineLabs.Core.Extensions
     /// <summary> Extensions for the mathematics package. </summary>
     public static class MathematicsExtensions
     {
+#if UNITY_ENTITES
+
         /// <summary> Encapsulates two AABBs. </summary>
         /// <param name="aabb"> The base AABB. </param>
         /// <param name="bounds"> The second AABB. </param>
@@ -53,6 +53,8 @@ namespace BovineLabs.Core.Extensions
         {
             return aabb.Center.Equals(float3.zero) && aabb.Extents.Equals(float3.zero);
         }
+
+#endif // UNITY_ENTITES
 
         /// <summary> Get the right vector from a transformation matrix. </summary>
         /// <param name="value"> The transformation matrix. </param>
@@ -113,5 +115,3 @@ namespace BovineLabs.Core.Extensions
         }
     }
 }
-
-#endif // UNITY_ENTITES

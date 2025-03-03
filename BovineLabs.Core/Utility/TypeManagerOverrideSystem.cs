@@ -4,7 +4,8 @@
 
 #if UNITY_ENTITES
 
-#if UNITY_6000_0_OR_NEWER && BL_TYPEMANAGER_OVERRIDE
+#if BL_TYPEMANAGER_OVERRIDE
+#if UNITY_6000_0_OR_NEWER
 namespace BovineLabs.Core.Utility
 {
     using Unity.Entities;
@@ -22,6 +23,7 @@ namespace BovineLabs.Core.Utility
         }
     }
 }
+#endif
 #endif
 
 #endif // UNITY_ENTITES

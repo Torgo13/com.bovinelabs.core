@@ -2,15 +2,15 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
-#undef UNITY_ASSERTIONS
-
 namespace BovineLabs.Core.Collections
 {
     using System;
     using System.Diagnostics;
-#if UNITY_ASSERTIONS
+#if UNITY_6000_0_OR_NEWER
     using Unity.Assertions;
-#endif // UNITY_ASSERTIONS
+#else
+    using UnityEngine.Assertions;
+#endif // UNITY_6000_0_OR_NEWER
     using Unity.Collections;
     using Unity.Collections.LowLevel.Unsafe;
 
@@ -165,9 +165,7 @@ namespace BovineLabs.Core.Collections
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
                 AtomicSafetyHandle.CheckReadAndThrow(this.m_Safety);
                 
-#if UNITY_ASSERTIONS
                 Assert.IsTrue(size <= UnsafeThreadStreamBlockData.AllocationSize - sizeof(void*));
-#endif // UNITY_ASSERTIONS
                 if (this.reader.m_RemainingItemCount < 1)
                 {
                     throw new ArgumentException("There are no more items left to be read.");

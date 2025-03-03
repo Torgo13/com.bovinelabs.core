@@ -614,4 +614,5 @@ namespace BovineLabs.Core
         ////////////////////////////////////////////
     }
 }
+
 #endif // UNITY_LOGGING

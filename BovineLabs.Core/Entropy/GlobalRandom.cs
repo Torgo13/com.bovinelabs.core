@@ -375,7 +375,11 @@ namespace BovineLabs.Core.Entropy
                 return;
             }
 
+#if UNITY_6000_0_OR_NEWER
             ThreadRandoms.Data = new ThreadRandom((uint)UnityEngine.Random.Range(0, int.MaxValue), Allocator.Domain);
+#else
+            ThreadRandoms.Data = new ThreadRandom((uint)UnityEngine.Random.Range(0, int.MaxValue), Allocator.Persistent);
+#endif // UNITY_6000_0_OR_NEWER
         }
 
         private struct RandomType

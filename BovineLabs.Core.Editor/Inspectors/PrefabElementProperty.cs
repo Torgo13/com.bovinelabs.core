@@ -2,15 +2,15 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
-#undef UNITY_ASSERTIONS
-
 namespace BovineLabs.Core.Editor.Inspectors
 {
     using BovineLabs.Core.Extensions;
     using BovineLabs.Core.PropertyDrawers;
-#if UNITY_ASSERTIONS
+#if UNITY_6000_0_OR_NEWER
     using Unity.Assertions;
-#endif // UNITY_ASSERTIONS
+#else
+    using UnityEngine.Assertions;
+#endif // UNITY_6000_0_OR_NEWER
     using UnityEditor;
     using UnityEngine;
     using UnityEngine.UIElements;
@@ -60,9 +60,7 @@ namespace BovineLabs.Core.Editor.Inspectors
             }
 
             var prefabProperty = this.prefabObject.FindProperty(property.propertyPath);
-#if UNITY_ASSERTIONS
             Assert.IsNotNull(prefabProperty);
-#endif // UNITY_ASSERTIONS
 
             return CreatePropertyField(prefabProperty, this.prefabObject);
         }

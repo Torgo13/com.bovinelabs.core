@@ -2,8 +2,6 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
-#undef UNITY_ASSERTIONS
-
 namespace BovineLabs.Core.Editor.Settings
 {
     using System;
@@ -16,9 +14,11 @@ namespace BovineLabs.Core.Editor.Settings
 #endif // UNITY_ENTITES
     using BovineLabs.Core.Editor.Helpers;
     using BovineLabs.Core.Settings;
-#if UNITY_ASSERTIONS
+#if UNITY_6000_0_OR_NEWER
     using Unity.Assertions;
-#endif // UNITY_ASSERTIONS
+#else
+    using UnityEngine.Assertions;
+#endif // UNITY_6000_0_OR_NEWER
     using UnityEditor;
     using UnityEngine;
     using Object = UnityEngine.Object;
@@ -142,16 +142,10 @@ namespace BovineLabs.Core.Editor.Settings
                 }
             }
 
-#if UNITY_ASSERTIONS
-
             Assert.IsNotNull(instance, $"{type.Name} returned null from asset database. Might need to reimport something.");
-
-#endif // UNITY_ASSERTIONS
             
 #if UNITY_ENTITES
-
             TryAddToSettingsAuthoring(instance);
-
 #endif // UNITY_ENTITES
 
             return (ISettings)instance;

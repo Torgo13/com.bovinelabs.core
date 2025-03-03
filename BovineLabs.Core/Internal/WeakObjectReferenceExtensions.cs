@@ -2,6 +2,8 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
+#if UNITY_ENTITES
+
 namespace BovineLabs.Core.Internal
 {
     using Unity.Entities.Content;
@@ -23,3 +25,5 @@ namespace BovineLabs.Core.Internal
         }
     }
 }
+
+#endif // UNITY_ENTITES

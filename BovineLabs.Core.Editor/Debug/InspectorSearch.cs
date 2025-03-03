@@ -2,6 +2,8 @@
 //     Copyright (c) BovineLabs. All rights reserved.
 // </copyright>
 
+#if UNITY_ENTITES
+
 #if !BL_DISABLE_INSPECTOR_SEARCH
 namespace BovineLabs.Core.Editor
 {
@@ -131,3 +133,5 @@ namespace BovineLabs.Core.Editor
     }
 }
 #endif
+
+#endif // UNITY_ENTITES

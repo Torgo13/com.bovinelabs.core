@@ -18,6 +18,11 @@ namespace BovineLabs.Core.Utility
     using AssemblyFlags = UnityEditor.Compilation.AssemblyFlags;
 #endif
 
+#if UNITY_LOGGING
+#else
+    using Debug = UnityEngine.Debug;
+#endif // UNITY_LOGGING
+
     /// <summary> Common reflection helpers. </summary>
     public static class ReflectionUtility
     {
